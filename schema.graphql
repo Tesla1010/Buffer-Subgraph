@@ -9,6 +9,14 @@ type EventData @entity {
   id: Bytes!
   name: String!
   amount: BigInt!
+  blpAmount: BigInt!
   contractAddress: Bytes!
   userAddress: Bytes!
+  counter: Int!
+  timestamp: BigInt!
+}
+
+type Counter @entity {
+  id: String!
+  counter: Int!
 }

@@ -2,6 +2,7 @@ import { Provide, Withdraw, Profit } from "../generated/BinaryPool/BinaryPool";
 import {
   _createEventDataEntity,
   _loadOrCreateUserPoolEntity,
+  _loadOrCreateCounter,
 } from "./initialize";
 
 export function handleProvide(event: Provide): void {
@@ -10,7 +11,9 @@ export function handleProvide(event: Provide): void {
     event.params.amount,
     event.params.account,
     "Provide",
-    event.address
+    event.address,
+    event.params.writeAmount,
+    event.block.timestamp
   );
   let userPoolData = _loadOrCreateUserPoolEntity(
     event.params.account,
@@ -26,7 +29,9 @@ export function handleWithdraw(event: Withdraw): void {
     event.params.amount,
     event.params.account,
     "Withdraw",
-    event.address
+    event.address,
+    event.params.writeAmount,
+    event.block.timestamp
   );
   let userPoolData = _loadOrCreateUserPoolEntity(
     event.params.account,
