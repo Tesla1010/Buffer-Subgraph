@@ -21,7 +21,11 @@ import {
 import { _getDayId } from "./helpers";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BinaryPool } from "../generated/BinaryPool/BinaryPool";
-import { ARB_POOL_CONTRACT, USDC_POL_POOL_CONTRACT, USDC_POOL_CONTRACT } from "./config";
+import {
+  ARB_POOL_CONTRACT,
+  USDC_POL_POOL_CONTRACT,
+  USDC_POOL_CONTRACT,
+} from "./config";
 
 export const ZERO = BigInt.fromI32(0);
 
@@ -64,8 +68,17 @@ export function _loadOrCreateOptionContractEntity(
     optionContract.payoutForDown = ZERO;
     optionContract.payoutForUp = ZERO;
     optionContract.asset = optionContractInstance.assetPair();
-    optionContract.pool = "USDC_POL";
-    optionContract.token = "USDC"
+    let optionContractPool = optionContractInstance.pool();
+    if (optionContractPool == Address.fromString(ARB_POOL_CONTRACT)) {
+      optionContract.token = "ARB";
+      optionContract.pool = "ARB";
+    } else if (optionContractPool == Address.fromString(USDC_POOL_CONTRACT)) {
+      optionContract.token = "USDC";
+      optionContract.pool = "USDC";
+    } else {
+      optionContract.token = "USDC";
+      optionContract.pool = "USDC";
+    }
     optionContract.payoutForDown = calculatePayout(
       BigInt.fromI32(
         optionContractInstance.baseSettlementFeePercentageForBelow()

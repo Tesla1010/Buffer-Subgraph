@@ -6,6 +6,7 @@ import {
   _loadOrCreateOptionContractEntity,
   _loadOrCreateUserStat,
   _calculateCurrentUtilization,
+  ZERO,
 } from "./initialize";
 import { DailyUserStat } from "../generated/schema";
 import {
@@ -25,8 +26,6 @@ export function updateOptionContractData(
   let optionContractData = _loadOrCreateOptionContractEntity(contractAddress);
   let poolToken = optionContractData.pool;
   let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
-  let totalLockedAmount = optionContractInstance.totalLockedAmount();
-  let poolAddress = Address.fromString(ADDRESS_ZERO);
   optionContractData.tradeCount += 1;
   optionContractData.volume = optionContractData.volume.plus(totalFee);
   if (isAbove) {
@@ -41,17 +40,7 @@ export function updateOptionContractData(
   optionContractData.openInterest = increaseInOpenInterest
     ? optionContractData.openInterest.plus(totalFee)
     : optionContractData.openInterest.minus(totalFee);
-  if (poolToken == "USDC_POL") {
-    poolAddress = Address.fromString(USDC_POL_POOL_CONTRACT);
-  } else if (poolToken == "ARB") {
-    poolAddress = Address.fromString(ARB_POOL_CONTRACT);
-  } else if (poolToken == "USDC") {
-    poolAddress = Address.fromString(USDC_POOL_CONTRACT);
-  }
-  optionContractData.currentUtilization = _calculateCurrentUtilization(
-    totalLockedAmount,
-    poolAddress
-  );
+  optionContractData.currentUtilization = ZERO;
   optionContractData.save();
   return poolToken;
 }
