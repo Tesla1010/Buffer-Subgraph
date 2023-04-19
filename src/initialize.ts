@@ -64,17 +64,8 @@ export function _loadOrCreateOptionContractEntity(
     optionContract.payoutForDown = ZERO;
     optionContract.payoutForUp = ZERO;
     optionContract.asset = optionContractInstance.assetPair();
-    let optionContractPool = optionContractInstance.pool();
-    if (optionContractPool == Address.fromString(USDC_POL_POOL_CONTRACT)) {
-      optionContract.token = "USDC";
-      optionContract.pool = "USDC_POL";
-    } else if (optionContractPool == Address.fromString(ARB_POOL_CONTRACT)) {
-      optionContract.token = "ARB";
-      optionContract.pool = "ARB";
-    } else if (optionContractPool == Address.fromString(USDC_POOL_CONTRACT)) {
-      optionContract.token = "USDC";
-      optionContract.pool = "USDC";
-    }
+    optionContract.pool = "USDC_POL";
+    optionContract.token = "USDC"
     optionContract.payoutForDown = calculatePayout(
       BigInt.fromI32(
         optionContractInstance.baseSettlementFeePercentageForBelow()
