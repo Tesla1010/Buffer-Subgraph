@@ -4,10 +4,10 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: BufferBinaryOptions
-    network: arbitrum-goerli
+    network: arbitrum-one
     source:
       abi: BufferBinaryOptions
-      startBlock: 9873052
+      startBlock: 83820389
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -26,11 +26,11 @@ dataSources:
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: FaucetLBFR
-    network: arbitrum-goerli
+    network: arbitrum-one
     source:
-      address: "0xb4e871c107501C779C6D11d1B33500804bc96B65"
+      address: "0x06F9a2414Ac91ECe109ede8D41C60fAf2669D6e3"
       abi: FaucetLBFR
-      startBlock: 16873052
+      startBlock: 83820389
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

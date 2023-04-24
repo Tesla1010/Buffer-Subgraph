@@ -5,13 +5,7 @@ import {
   LBFRClaimDataPerUser,
 } from "../generated/schema";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
-import {
-  ARB_POOL_CONTRACT,
-  ARB_TOKEN_ADDRESS,
-  USDC_ADDRESS,
-  USDC_POL_POOL_CONTRACT,
-  USDC_POOL_CONTRACT,
-} from "./config";
+import { ARB_TOKEN_ADDRESS, USDC_ADDRESS } from "./config";
 
 export const ZERO = BigInt.fromI32(0);
 
