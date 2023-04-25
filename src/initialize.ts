@@ -6,8 +6,9 @@ import {
 } from "../generated/schema";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { ARB_TOKEN_ADDRESS, USDC_ADDRESS } from "./config";
-
+import { NFT } from "../generated/schema";
 export const ZERO = BigInt.fromI32(0);
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 export function _loadOrCreateOptionContractEntity(
   contractAddress: Address
@@ -70,4 +71,22 @@ export function _loadOrCreateLBFRClaimDataPerUser(
     lbfrStat.save();
   }
   return lbfrStat as LBFRClaimDataPerUser;
+}
+
+export function _loadOrCreateNFT(tokenId: BigInt): NFT {
+  let referenceID = `${tokenId}`;
+  let entity = NFT.load(referenceID);
+  if (entity == null) {
+    entity = new NFT(referenceID);
+    entity.batchId = ZERO;
+    entity.tokenId = tokenId;
+    entity.tier = "";
+    entity.owner = Bytes.fromHexString(ZERO_ADDRESS);
+    entity.nftImage = "";
+    entity.ipfs = "";
+    entity.hasRevealed = false;
+
+    entity.save();
+  }
+  return entity as NFT;
 }

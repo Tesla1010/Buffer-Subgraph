@@ -3,6 +3,7 @@ import { _getWeekId } from "./helpers";
 import { _loadOrCreateLBFRStat } from "./initialize";
 import { Slabs } from "./config";
 import { convertARBToUSDC } from "./convertARBToUSDC";
+import { UserNFT, NFT } from "../generated/schema";
 
 const FACTOR_OF_18 = BigInt.fromI64(1000000000000000000);
 const FACTOR_OF_6 = BigInt.fromI64(1000000);
@@ -76,7 +77,9 @@ export function updateLBFRStats(
   } else if (token == "ARB") {
     LBFRStat.volumeARB = LBFRStat.volumeARB.plus(totalFee);
     TotalLBFRStat.volumeARB = TotalLBFRStat.volumeARB.plus(totalFee);
-    totalFee = convertARBToUSDC(totalFee).times(FACTOR_OF_18).div(FACTOR_OF_6);
+    totalFee = convertARBToUSDC(totalFee)
+      .times(FACTOR_OF_18)
+      .div(FACTOR_OF_6);
   }
   let initialVolume = LBFRStat.volume;
   let finalVolume = LBFRStat.volume.plus(totalFee);
@@ -90,8 +93,43 @@ export function updateLBFRStats(
   TotalLBFRStat.lBFRAlloted = TotalLBFRStat.lBFRAlloted.plus(lbfrAlloted);
   LBFRStat.claimable = LBFRStat.claimable.plus(lbfrAlloted);
   TotalLBFRStat.claimable = TotalLBFRStat.claimable.plus(lbfrAlloted);
-  LBFRStat.currentSlab = getCurrentSlab(finalVolume);
+
+  let slab = getSlabBasedOnNFTs(userAddress);
+  if (slab == ZERO) {
+    slab = getCurrentSlab(finalVolume);
+  }
+  LBFRStat.currentSlab = slab;
 
   LBFRStat.save();
   TotalLBFRStat.save();
+}
+
+export function getSlabBasedOnNFTs(userAddress: Bytes): BigInt {
+  let nftsOwned = 0;
+  let userNfts = UserNFT.load(userAddress);
+  if (userNfts != null) {
+    nftsOwned = userNfts.tokenIds.length;
+    if (nftsOwned >= 10) {
+      let diamond = false;
+      let gold = false;
+      let silver = false;
+      let platinum = false;
+      for (let i = 0; i < nftsOwned; i++) {
+        let nft = new NFT(userNfts.tokenIds[i].toString());
+        if (nft.tier == "Diamond") {
+          diamond = true;
+        } else if (nft.tier == "Gold") {
+          gold = true;
+        } else if (nft.tier == "Silver") {
+          silver = true;
+        } else if (nft.tier == "Platinum") {
+          platinum = true;
+        }
+      }
+      if (diamond && gold && silver && platinum) {
+        return BigInt.fromI32(5);
+      }
+    }
+  }
+  return ZERO;
 }

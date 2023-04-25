@@ -6,7 +6,7 @@ export const Slabs = [
   [BigInt.fromI32(200000), BigInt.fromI32(200), BigInt.fromI32(27500000)],
   [BigInt.fromI32(500000), BigInt.fromI32(400), BigInt.fromI32(87500000)],
 ];
-export const LBFR_START_TIMESTAMP = 1682345791;
+export const LBFR_START_TIMESTAMP = 1682352000;
 
 export const RouterAddress = "0x0e0A1241C9cE6649d5D30134a194BA3E24130305";
 export const USDC_ADDRESS = "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8";
