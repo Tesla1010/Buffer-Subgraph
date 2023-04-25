@@ -106,30 +106,33 @@ export function updateLBFRStats(
 
 export function getSlabBasedOnNFTs(userAddress: Bytes): BigInt {
   let nftsOwned = 0;
-  // let userNfts = UserNFT.load(userAddress);
-  // if (userNfts != null) {
-  //   nftsOwned = userNfts.tokenIds.length;
-  //   if (nftsOwned >= 10) {
-  //     let diamond = false;
-  //     let gold = false;
-  //     let silver = false;
-  //     let platinum = false;
-  //     for (let i = 0; i < nftsOwned; i++) {
-  //       let nft = new NFT(userNfts.tokenIds[i].toString());
-  //       if (nft.tier == "Diamond") {
-  //         diamond = true;
-  //       } else if (nft.tier == "Gold") {
-  //         gold = true;
-  //       } else if (nft.tier == "Silver") {
-  //         silver = true;
-  //       } else if (nft.tier == "Platinum") {
-  //         platinum = true;
-  //       }
-  //     }
-  //     if (diamond && gold && silver && platinum) {
-  //       return BigInt.fromI32(5);
-  //     }
-  //   }
-  // }
+  let userNfts = UserNFT.load(userAddress);
+  if (userNfts != null) {
+    nftsOwned = userNfts.tokenIds.length;
+    if (nftsOwned >= 10) {
+      let diamond = false;
+      let gold = false;
+      let silver = false;
+      let platinum = false;
+      for (let i = 0; i < nftsOwned; i++) {
+        let nft = NFT.load(userNfts.tokenIds[i].toString());
+        if (nft == null) {
+          continue;
+        }
+        if (nft.tier == "Diamond") {
+          diamond = true;
+        } else if (nft.tier == "Gold") {
+          gold = true;
+        } else if (nft.tier == "Silver") {
+          silver = true;
+        } else if (nft.tier == "Platinum") {
+          platinum = true;
+        }
+      }
+      if (diamond && gold && silver && platinum) {
+        return BigInt.fromI32(5);
+      }
+    }
+  }
   return ZERO;
 }
