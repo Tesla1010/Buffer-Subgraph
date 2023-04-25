@@ -2,23 +2,8 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20",
-        "name": "_tokenX",
-        "type": "address"
-      },
-      {
-        "internalType": "contract ILiquidityPool",
-        "name": "_pool",
-        "type": "address"
-      },
-      {
         "internalType": "contract IOptionsConfig",
         "name": "_config",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IReferralStorage",
-        "name": "_referral",
         "type": "address"
       },
       {
@@ -26,7 +11,12 @@
         "name": "_category",
         "type": "uint8"
       },
-      { "internalType": "string", "name": "_assetPair", "type": "string" }
+      { "internalType": "string", "name": "_assetPair", "type": "string" },
+      {
+        "internalType": "address",
+        "name": "_tournamentManager",
+        "type": "address"
+      }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
@@ -97,6 +87,12 @@
         "type": "uint256"
       },
       {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tournamentId",
+        "type": "uint256"
+      },
+      {
         "indexed": false,
         "internalType": "uint256",
         "name": "settlementFee",
@@ -118,6 +114,31 @@
       {
         "indexed": true,
         "internalType": "address",
+        "name": "targetContract",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "config",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "assetPair",
+        "type": "string"
+      }
+    ],
+    "name": "CreateContract",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
         "name": "account",
         "type": "address"
       },
@@ -125,6 +146,12 @@
         "indexed": true,
         "internalType": "uint256",
         "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tournamentId",
         "type": "uint256"
       },
       {
@@ -153,9 +180,15 @@
         "type": "uint256"
       },
       {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tournamentId",
+        "type": "uint256"
+      },
+      {
         "indexed": false,
         "internalType": "uint256",
-        "name": "premium",
+        "name": "loss",
         "type": "uint256"
       },
       {
@@ -282,55 +315,6 @@
     "type": "event"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "referrer",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "isReferralValid",
-        "type": "bool"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "totalFee",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "referrerFee",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "rebate",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "referralCode",
-        "type": "string"
-      }
-    ],
-    "name": "UpdateReferral",
-    "type": "event"
-  },
-  {
     "inputs": [],
     "name": "DEFAULT_ADMIN_ROLE",
     "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
@@ -346,13 +330,11 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "referrer", "type": "address" },
       { "internalType": "address", "name": "user", "type": "address" },
       { "internalType": "uint256", "name": "traderNFTId", "type": "uint256" }
     ],
     "name": "_getSettlementFeeDiscount",
     "outputs": [
-      { "internalType": "bool", "name": "isReferralValid", "type": "bool" },
       { "internalType": "uint8", "name": "maxStep", "type": "uint8" }
     ],
     "stateMutability": "view",
@@ -364,13 +346,6 @@
       { "internalType": "uint256", "name": "tokenId", "type": "uint256" }
     ],
     "name": "approve",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "approvePoolToTransferTokenX",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -419,46 +394,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "components": [
-          { "internalType": "uint256", "name": "strike", "type": "uint256" },
-          { "internalType": "uint256", "name": "amount", "type": "uint256" },
-          { "internalType": "uint256", "name": "period", "type": "uint256" },
-          { "internalType": "bool", "name": "isAbove", "type": "bool" },
-          {
-            "internalType": "bool",
-            "name": "allowPartialFill",
-            "type": "bool"
-          },
-          { "internalType": "uint256", "name": "totalFee", "type": "uint256" },
-          { "internalType": "address", "name": "user", "type": "address" },
-          {
-            "internalType": "string",
-            "name": "referralCode",
-            "type": "string"
-          },
-          {
-            "internalType": "uint256",
-            "name": "traderNFTId",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct IBufferBinaryOptions.OptionParams",
-        "name": "optionParams",
-        "type": "tuple"
-      }
-    ],
-    "name": "checkParams",
-    "outputs": [
-      { "internalType": "uint256", "name": "amount", "type": "uint256" },
-      { "internalType": "uint256", "name": "revisedFee", "type": "uint256" },
-      { "internalType": "bool", "name": "isReferralValid", "type": "bool" }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "config",
     "outputs": [
@@ -474,45 +409,21 @@
   {
     "inputs": [
       {
-        "internalType": "uint16",
-        "name": "_baseSettlementFeePercentageForAbove",
-        "type": "uint16"
-      },
-      {
-        "internalType": "uint16",
-        "name": "_baseSettlementFeePercentageForBelow",
-        "type": "uint16"
-      },
-      { "internalType": "uint8[4]", "name": "_nftTierStep", "type": "uint8[4]" }
-    ],
-    "name": "configure",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "components": [
           { "internalType": "uint256", "name": "strike", "type": "uint256" },
           { "internalType": "uint256", "name": "amount", "type": "uint256" },
           { "internalType": "uint256", "name": "period", "type": "uint256" },
           { "internalType": "bool", "name": "isAbove", "type": "bool" },
-          {
-            "internalType": "bool",
-            "name": "allowPartialFill",
-            "type": "bool"
-          },
           { "internalType": "uint256", "name": "totalFee", "type": "uint256" },
           { "internalType": "address", "name": "user", "type": "address" },
           {
-            "internalType": "string",
-            "name": "referralCode",
-            "type": "string"
+            "internalType": "uint256",
+            "name": "traderNFTId",
+            "type": "uint256"
           },
           {
             "internalType": "uint256",
-            "name": "traderNFTId",
+            "name": "tournamentId",
             "type": "uint256"
           }
         ],
@@ -520,7 +431,7 @@
         "name": "optionParams",
         "type": "tuple"
       },
-      { "internalType": "bool", "name": "isReferralValid", "type": "bool" }
+      { "internalType": "uint256", "name": "queuedTime", "type": "uint256" }
     ],
     "name": "createFromRouter",
     "outputs": [
@@ -541,7 +452,6 @@
       { "internalType": "uint256", "name": "amount", "type": "uint256" },
       { "internalType": "address", "name": "user", "type": "address" },
       { "internalType": "bool", "name": "isAbove", "type": "bool" },
-      { "internalType": "string", "name": "referralCode", "type": "string" },
       { "internalType": "uint256", "name": "traderNFTId", "type": "uint256" }
     ],
     "name": "fees",
@@ -555,19 +465,43 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "tokenId", "type": "uint256" }
+      {
+        "components": [
+          { "internalType": "uint256", "name": "strike", "type": "uint256" },
+          { "internalType": "uint256", "name": "amount", "type": "uint256" },
+          { "internalType": "uint256", "name": "period", "type": "uint256" },
+          { "internalType": "bool", "name": "isAbove", "type": "bool" },
+          { "internalType": "uint256", "name": "totalFee", "type": "uint256" },
+          { "internalType": "address", "name": "user", "type": "address" },
+          {
+            "internalType": "uint256",
+            "name": "traderNFTId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tournamentId",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IBufferBinaryOptions.OptionParams",
+        "name": "optionParams",
+        "type": "tuple"
+      }
     ],
-    "name": "getApproved",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "getAmount",
+    "outputs": [
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getMaxUtilization",
-    "outputs": [
-      { "internalType": "uint256", "name": "maxAmount", "type": "uint256" }
+    "inputs": [
+      { "internalType": "uint256", "name": "tokenId", "type": "uint256" }
     ],
+    "name": "getApproved",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -660,6 +594,13 @@
   },
   {
     "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "optionIdToTournament",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "name": "options",
     "outputs": [
       {
@@ -685,32 +626,6 @@
     ],
     "name": "ownerOf",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "pool",
-    "outputs": [
-      {
-        "internalType": "contract ILiquidityPool",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "referral",
-    "outputs": [
-      {
-        "internalType": "contract IReferralStorage",
-        "name": "",
-        "type": "address"
-      }
-    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -761,7 +676,7 @@
       { "internalType": "address", "name": "from", "type": "address" },
       { "internalType": "address", "name": "to", "type": "address" },
       { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
-      { "internalType": "bytes", "name": "_data", "type": "bytes" }
+      { "internalType": "bytes", "name": "data", "type": "bytes" }
     ],
     "name": "safeTransferFrom",
     "outputs": [],
@@ -774,6 +689,32 @@
       { "internalType": "bool", "name": "approved", "type": "bool" }
     ],
     "name": "setApprovalForAll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint16",
+        "name": "_baseSettlementFeePercentageForAbove",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_baseSettlementFeePercentageForBelow",
+        "type": "uint16"
+      },
+      { "internalType": "uint8[4]", "name": "_nftTierStep", "type": "uint8[4]" }
+    ],
+    "name": "setConfigure",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bool", "name": "_isPaused", "type": "bool" }],
+    "name": "setCreation",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -802,13 +743,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "toggleCreation",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       { "internalType": "uint256", "name": "tokenId", "type": "uint256" }
     ],
@@ -819,17 +753,14 @@
   },
   {
     "inputs": [],
-    "name": "tokenX",
+    "name": "tournamentManager",
     "outputs": [
-      { "internalType": "contract ERC20", "name": "", "type": "address" }
+      {
+        "internalType": "contract ITournamentManager",
+        "name": "",
+        "type": "address"
+      }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "totalLockedAmount",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },

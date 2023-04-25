@@ -3,6 +3,7 @@ import {
   Expire,
   Exercise,
   Pause,
+  CreateContract,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import {
   InitiateTrade,
@@ -13,13 +14,17 @@ import {
   _handleCreate,
   _handleExpire,
   _handleExercise,
-  _handlePause,
+  _handleCreateContract,
 } from "./optionContractHandlers";
 import {
   _handleCancelTrade,
   _handleOpenTrade,
   _handleInitiateTrade,
 } from "./routerContractHandlers";
+
+export function handleCreateContract(event: CreateContract): void {
+  _handleCreateContract(event);
+}
 
 export function handleInitiateTrade(event: InitiateTrade): void {
   _handleInitiateTrade(event);
@@ -44,8 +49,3 @@ export function handleExercise(event: Exercise): void {
 export function handleExpire(event: Expire): void {
   _handleExpire(event);
 }
-
-export function handlePause(event: Pause): void {
-  _handlePause(event);
-}
-

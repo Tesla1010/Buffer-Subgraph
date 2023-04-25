@@ -1,49 +1,12 @@
 import { BigInt, Address } from "@graphprotocol/graph-ts";
-import {
-  BufferBinaryOptions,
-} from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { User } from "../generated/schema";
 import { _getDayId } from "./helpers";
 import {
   _loadOrCreateOptionContractEntity,
-  _loadOrCreateUserStat,
-  _calculateCurrentUtilization,
+  _loadOrCreateUserStat
 } from "./initialize";
 import { DailyUserStat } from "../generated/schema";
 
-export function updateOptionContractData(
-  increaseInOpenInterest: boolean,
-  isAbove: boolean,
-  totalFee: BigInt,
-  contractAddress: Address
-): string {
-  let optionContractData = _loadOrCreateOptionContractEntity(contractAddress);
-  let tokenReferrenceID = optionContractData.token;
-  let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
-  let totalLockedAmount = optionContractInstance.totalLockedAmount();
-  let poolAddress = optionContractInstance.pool();
-  optionContractData.tradeCount += 1;
-  optionContractData.volume = optionContractData.volume.plus(totalFee);
-  if (isAbove) {
-    optionContractData.openUp = increaseInOpenInterest
-      ? optionContractData.openUp.plus(totalFee)
-      : optionContractData.openUp.minus(totalFee);
-  } else {
-    optionContractData.openDown = increaseInOpenInterest
-      ? optionContractData.openDown.plus(totalFee)
-      : optionContractData.openDown.minus(totalFee);
-  }
-  optionContractData.openInterest = increaseInOpenInterest
-    ? optionContractData.openInterest.plus(totalFee)
-    : optionContractData.openInterest.minus(totalFee);
-
-  optionContractData.currentUtilization = _calculateCurrentUtilization(
-    totalLockedAmount,
-    poolAddress
-  );
-  optionContractData.save();
-  return tokenReferrenceID;
-}
 
 export function logUser(timestamp: BigInt, account: Address): void {
   let user = User.load(account);

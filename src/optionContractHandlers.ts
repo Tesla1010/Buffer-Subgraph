@@ -3,19 +3,28 @@ import {
   Create,
   Expire,
   Exercise,
-  UpdateReferral,
-  Pause,
   BufferBinaryOptions,
+  CreateContract
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { _getDayId, _getHourId, _getWeekId } from "./helpers";
 import {
   _loadOrCreateOptionContractEntity,
-  _loadOrCreateOptionDataEntity,
-  _loadOrCreateReferralData,
+  _loadOrCreateOptionDataEntity
 } from "./initialize";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import { State, RouterAddress } from "./config";
-import { updateOptionContractData } from "./core";
+
+
+export function _handleCreateContract(event: CreateContract): void {
+  let contractAddress = event.address;
+  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  if (routerContract.contractRegistry(contractAddress) == true) {
+    let optionContract = _loadOrCreateOptionContractEntity(contractAddress);
+    optionContract.asset = event.params.assetPair;
+    optionContract.config = event.params.config;
+  }
+}
+
 
 export function _handleCreate(event: Create): void {
   let contractAddress = event.address;
@@ -26,12 +35,6 @@ export function _handleCreate(event: Create): void {
     let optionData = optionContractInstance.options(optionID);
     let isAbove = optionData.value6 ? true : false;
     let totalFee = event.params.totalFee;
-    let tokenReferrenceID = updateOptionContractData(
-      true,
-      isAbove,
-      totalFee,
-      contractAddress
-    );
     let userOptionData = _loadOrCreateOptionDataEntity(
       optionID,
       contractAddress
@@ -45,7 +48,6 @@ export function _handleCreate(event: Create): void {
     userOptionData.isAbove = isAbove;
     userOptionData.creationTime = optionData.value8;
     userOptionData.settlementFee = event.params.settlementFee;
-    userOptionData.depositToken = tokenReferrenceID;
     userOptionData.save();
   }
 }
@@ -79,12 +81,3 @@ export function _handleExercise(event: Exercise): void {
   }
 }
 
-export function _handlePause(event: Pause): void {
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  if (routerContract.contractRegistry(event.address) == true) {
-    let isPaused = event.params.isPaused;
-    let optionContract = _loadOrCreateOptionContractEntity(event.address);
-    optionContract.isPaused = isPaused;
-    optionContract.save();
-  }
-}

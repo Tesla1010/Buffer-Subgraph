@@ -7,18 +7,9 @@ enum Period {
 
 type OptionContract @entity {
   id: Bytes!
-  address: Bytes
-  isPaused: Boolean!
-  openUp: BigInt!
-  openDown: BigInt!
-  openInterest: BigInt!
-  tradeCount: Int!
-  volume: BigInt!
-  currentUtilization: BigInt
-  token: String!
-  payoutForUp: BigInt
-  payoutForDown: BigInt
-  asset: String
+  address: Bytes!
+  config: Bytes!
+  asset: String!
 }
 
 type QueuedOptionData @entity {
@@ -53,7 +44,6 @@ type UserOptionData @entity {
   amount: BigInt!
   expirationTime: BigInt
   isAbove: Boolean
-  depositToken: String!
   queueID: BigInt
   settlementFee: BigInt!
   lag: BigInt!
