@@ -16,13 +16,9 @@ import { State, RouterAddress } from "./config";
 
 
 export function _handleCreateContract(event: CreateContract): void {
-  let contractAddress = event.address;
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  if (routerContract.contractRegistry(contractAddress) == true) {
-    let optionContract = _loadOrCreateOptionContractEntity(contractAddress);
-    optionContract.asset = event.params.assetPair;
-    optionContract.config = event.params.config;
-  }
+  let optionContract = _loadOrCreateOptionContractEntity(event.address);
+  optionContract.asset = event.params.assetPair;
+  optionContract.config = event.params.config;
 }
 
 
@@ -48,6 +44,7 @@ export function _handleCreate(event: Create): void {
     userOptionData.isAbove = isAbove;
     userOptionData.creationTime = optionData.value8;
     userOptionData.settlementFee = event.params.settlementFee;
+    userOptionData.tournament = event.params.tournamentId.toString();
     userOptionData.save();
   }
 }

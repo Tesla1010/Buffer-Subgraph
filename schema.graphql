@@ -47,6 +47,7 @@ type UserOptionData @entity {
   queueID: BigInt
   settlementFee: BigInt!
   lag: BigInt!
+  tournament: Tournament
 }
 
 type User @entity {
@@ -66,4 +67,10 @@ type UserStat @entity {
 
 type DailyUserStat @entity {
   id: String!
+}
+
+type Tournament @entity {
+  id: String!
+  state: String!
+  lastUpdated: BigInt!
 }

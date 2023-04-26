@@ -16,30 +16,54 @@ dataSources:
         - UserOptionData
         - OptionContract
         - User
+        - QueuedOptionData
+        - Tournament
       abis:
         - name: BufferBinaryOptions
           file: ./abis/BufferBinaryOptions.json
-        - name: BinaryPool
-          file: ./abis/BinaryPool.json
         - name: BufferRouter
           file: ./abis/BufferRouter.json
-        - name: UniswapPool
-          file: ./abis/UniswapPool.json
       eventHandlers:
         - event: CreateContract(indexed address,address,string)
           handler: handleCreateContract
-        # - event: Create(indexed address,indexed uint256,uint256,uint256)
-        #   handler: handleCreate
-        # - event: Expire(indexed uint256,uint256,uint256)
-        #   handler: handleExpire
-        # - event: Exercise(indexed address,indexed uint256,uint256,uint256)
-        #   handler: handleExercise
+        - event: Create(indexed address,indexed uint256,indexed uint256,uint256,uint256)
+          handler: handleCreate
+        - event: Expire(indexed uint256,indexed uint256,uint256,uint256)
+          handler: handleExpire
+        - event: Exercise(indexed address,indexed uint256,indexed uint256,uint256,uint256)
+          handler: handleExercise
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: TournamentManager
+    network: arbitrum-goerli
+    source:
+      address: "0x9E9bE7b36ADf4D14520d1F3DE15Eda450331F190"
+      abi: TournamentManager
+      startBlock: 17664291
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Tournament
+      abis:
+        - name: TournamentManager
+          file: ./abis/TournamentManager.json
+      eventHandlers:
+        - event: VerifyTournament(uint256)
+          handler: handleVerifyTournament
+        - event: StartTournament(uint256)
+          handler: handleStartTournament
+        - event: EndTournament(uint256)
+          handler: handleEndTournament
+        - event: CloseTournament(uint256,string)
+          handler: handleCloseTournament
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferRouter
     network: arbitrum-goerli
     source:
-      address: "0x0e0A1241C9cE6649d5D30134a194BA3E24130305"
+      address: "0xAc0C97659F0a86C8B24C61f6e3aEf65F06622e7A"
       abi: BufferRouter
       startBlock: 17664367
     mapping:
@@ -47,6 +71,7 @@ dataSources:
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
+        - QueuedOptionData
         - UserOptionData
       abis:
         - name: BufferBinaryOptions
@@ -54,11 +79,10 @@ dataSources:
         - name: BufferRouter
           file: ./abis/BufferRouter.json
       eventHandlers:
-        - event: InitiateTrade(indexed address,uint256,uint256)
+        - event: InitiateTrade(indexed address,uint256,uint256,uint256)
           handler: handleInitiateTrade
-        - event: CancelTrade(indexed address,uint256,string)
+        - event: CancelTrade(indexed address,uint256,uint256,string)
           handler: handleCancelTrade
-        - event: OpenTrade(indexed address,uint256,uint256)
+        - event: OpenTrade(indexed address,uint256,uint256,uint256)
           handler: handleOpenTrade
       file: ./src/mapping.ts
- 

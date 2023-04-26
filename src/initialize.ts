@@ -4,11 +4,8 @@ import {
   OptionContract,
   UserStat,
   QueuedOptionData,
+  Tournament,
 } from "../generated/schema";
-import { _getDayId } from "./helpers";
-import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
-import { USDC_ADDRESS, ARB_TOKEN_ADDRESS } from "./config";
-
 export const ZERO = BigInt.fromI32(0);
 
 export function _loadOrCreateOptionContractEntity(
@@ -74,4 +71,15 @@ export function _loadOrCreateUserStat(
     userStat.existingCount = 0;
   }
   return userStat as UserStat;
+}
+
+export function _loadOrCreateTournamentEntity(
+  id: BigInt
+): Tournament {
+  let tournamentID = id.toString();
+  let entity = Tournament.load(tournamentID);
+  if (entity == null) {
+    entity = new Tournament(tournamentID);
+  }
+  return entity as Tournament;
 }
