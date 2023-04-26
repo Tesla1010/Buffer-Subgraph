@@ -16,9 +16,14 @@ import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import { State, RouterAddress } from "./config";
 
 export function _handleCreateContract(event: CreateContract): void {
-  let optionContract = _loadOrCreateOptionContractEntity(event.address);
-  optionContract.asset = event.params.assetPair;
-  optionContract.config = event.params.config;
+  let contractAddress = event.address;
+  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  if (routerContract.contractRegistry(contractAddress) == true) {      
+    let optionContract = _loadOrCreateOptionContractEntity(contractAddress);
+    optionContract.asset = event.params.assetPair;
+    optionContract.config = event.params.config;
+    optionContract.save();
+  }
 }
 
 export function _handleCreate(event: Create): void {
