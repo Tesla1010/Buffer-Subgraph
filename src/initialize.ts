@@ -15,6 +15,7 @@ export function _loadOrCreateOptionContractEntity(
   if (optionContract == null) {
     optionContract = new OptionContract(contractAddress);
     optionContract.address = contractAddress;
+    optionContract.isPaused = false;
   }
   return optionContract as OptionContract;
 }

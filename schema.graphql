@@ -10,6 +10,7 @@ type OptionContract @entity {
   address: Bytes!
   config: Bytes!
   asset: String!
+  isPaused: Boolean!
 }
 
 type QueuedOptionData @entity {
