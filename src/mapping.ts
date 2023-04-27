@@ -16,6 +16,7 @@ import {
   CloseTournament,
   EndTournament,
   VerifyTournament,
+  CreateTournament
 } from "../generated/TournamentManager/TournamentManager";
 import {
   _handleCreate,
@@ -63,10 +64,18 @@ export function handlePause(event: Pause): void {
   _handlePause(event);
 }
 
+export function handleCreateTournament(event: CreateTournament): void {
+  updateTournamentState(
+    event.params.tournamentId,
+    "Created",
+    event.block.timestamp
+  );
+}
+
 export function handleVerifyTournament(event: VerifyTournament): void {
   updateTournamentState(
     event.params.tournamentId,
-    "Verified",
+    "Upcoming",
     event.block.timestamp
   );
 }
@@ -74,7 +83,7 @@ export function handleVerifyTournament(event: VerifyTournament): void {
 export function handleStartTournament(event: StartTournament): void {
   updateTournamentState(
     event.params.tournamentId,
-    "Started",
+    "Live",
     event.block.timestamp
   );
 }
@@ -90,7 +99,7 @@ export function handleCloseTournament(event: CloseTournament): void {
 export function handleEndTournament(event: EndTournament): void {
   updateTournamentState(
     event.params.tournamentId,
-    "Ended",
+    "Closed",
     event.block.timestamp
   );
 }
