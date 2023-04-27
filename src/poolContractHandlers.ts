@@ -1,4 +1,4 @@
-import { BigInt, Address, Bytes } from "@graphprotocol/graph-ts";
+import { BigInt, Address } from "@graphprotocol/graph-ts";
 import { _getDayId, _getHourId, _getWeekId } from "./helpers";
 import { _loadOrCreatePoolStat, _loadOrCreateARBPoolStat } from "./initialize";
 import { USDC } from "../generated/USDC/USDC";
