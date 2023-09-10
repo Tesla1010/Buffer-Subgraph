@@ -3,22 +3,22 @@ schema:
     file: ./schema.graphql
 dataSources:
     - kind: ethereum/contract
-      name: ERC20
+      name: Slots
       network: arbitrum-one
       source:
-        address: "0xBABF696008DDAde1e17D302b972376B8A7357698"
-        abi: ERC20
-        startBlock: 26783162
+        address: "0xb7085c28cC88105d299e3ae0c2f9FfefdAA7E055"
+        abi: Slots
+        startBlock: 40607702
       mapping:
         kind: ethereum/events
         apiVersion: 0.0.6
         language: wasm/assemblyscript
         entities:
-          - Holder
+          - PlayerResult
         abis:
-          - name: ERC20
-            file: ./abis/ERC20.json
+          - name: Slots
+            file: ./abis/Slots.json
         eventHandlers:
-          - event: Transfer(indexed address,indexed address,uint256)
-            handler: handleTransfer
+          - event: Slots_Outcome_Event(indexed address,uint256,uint256,address,uint16[],uint256[],uint256[],uint32)
+            handler: handleSlots_Outcome_Event
         file: ./src/mapping.ts

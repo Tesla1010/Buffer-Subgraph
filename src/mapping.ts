@@ -1,7 +1,7 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
-import {Transfer } from "../generated/ERC20/ERC20";
+import {Slots_Outcome_Event } from "../generated/Slots/Slots";
 import {
-  Holder,
+  PlayerResult,
   Counter
 } from "../generated/schema";
 let ZERO = BigInt.fromI32(0);
@@ -17,32 +17,24 @@ function loadOrCreateCounter(): Counter {
   return entity;
 }
 
-function loadOrCreateHolderData(account: Address): Holder {
-  let entity = Holder.load(account);
+function loadOrPlayerResultData(): PlayerResult {
+  let counter = loadOrCreateCounter();
+  let entity = PlayerResult.load(counter.counter.toString());
   if (!entity) {
-    entity = new Holder(account);
-    entity.balance = ZERO;
-    entity.counter = 0;
+    entity = new PlayerResult(counter.counter.toString());
     entity.save();
   }
   return entity;
 }
 
-export function handleTransfer(event: Transfer): void {
-  let fromAccount = loadOrCreateHolderData(event.params.from);
-  let toAccount = loadOrCreateHolderData(event.params.to);
-  let counter = loadOrCreateCounter();
-  if (fromAccount.id != Address.fromString(zeroAddress)) {
-    fromAccount.balance = fromAccount.balance.minus(event.params.value);
-    fromAccount.counter = counter.counter;
-    fromAccount.save();
-
-  }
-  if (toAccount.id != Address.fromString(zeroAddress)) {
-    toAccount.balance = toAccount.balance.plus(event.params.value);
-    toAccount.counter = counter.counter + 1;
-    toAccount.save();
-  }
-  counter.counter += 2;
-  counter.save();
-}
+export function handleSlots_Outcome_Event(event: Slots_Outcome_Event): void {
+  let playerResult = loadOrPlayerResultData();
+  playerResult.playerAddress = event.params.playerAddress;
+  playerResult.wager  = event.params.wager;
+  playerResult.payouts = event.params.payouts;
+  playerResult.numGames = event.params.numGames;
+  playerResult.slotIDs = event.params.slotIDs;
+  playerResult.multipliers = event.params.multipliers;
+  playerResult.payout = event.params.payout;
+  playerResult.save();
+} 
