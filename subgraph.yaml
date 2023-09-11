@@ -4,7 +4,7 @@ schema:
 dataSources:
     - kind: ethereum/contract
       name: Slots
-      network: arbitrum-one
+      network: arbitrum-goerli
       source:
         address: "0xb7085c28cC88105d299e3ae0c2f9FfefdAA7E055"
         abi: Slots

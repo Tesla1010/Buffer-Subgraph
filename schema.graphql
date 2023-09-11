@@ -1,13 +1,13 @@
 type PlayerResult @entity {
   id: String!
-  playerAddress: Bytes!
-  wager: BigInt!
-  payout: BigInt!
-  tokenAddress: Bytes!
-  slotIDs: [Int!]!
-  multipliers: [BigInt!]!
-  payouts: [BigInt!]!
-  numGames: BigInt!
+  playerAddress: Bytes
+  wager: BigInt
+  payout: BigInt
+  tokenAddress: Bytes
+  slotIDs: [Int!]
+  multipliers: [BigInt!]
+  payouts: [BigInt!]
+  numGames: BigInt
 }
 
 type Counter @entity {
