@@ -8,7 +8,7 @@ dataSources:
       source:
         address: "0xb7085c28cC88105d299e3ae0c2f9FfefdAA7E055"
         abi: Slots
-        startBlock: 40607702
+        startBlock: 40606277
       mapping:
         kind: ethereum/events
         apiVersion: 0.0.6
