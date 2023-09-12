@@ -1,5 +1,5 @@
 type PlayerResult @entity {
-  id: String!
+  id: Bytes!
   playerAddress: Bytes
   wager: BigInt
   payout: BigInt
@@ -8,9 +8,5 @@ type PlayerResult @entity {
   multipliers: [BigInt!]
   payouts: [BigInt!]
   numGames: BigInt
-}
-
-type Counter @entity {
-  id: String!
-  counter: Int!
+  createdAt: BigInt
 }

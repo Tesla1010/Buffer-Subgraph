@@ -1,34 +1,23 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import {Slots_Outcome_Event } from "../generated/Slots/Slots";
 import {
-  PlayerResult,
-  Counter
+  PlayerResult
 } from "../generated/schema";
 let ZERO = BigInt.fromI32(0);
 const zeroAddress = '0x0000000000000000000000000000000000000000';
 
-function loadOrCreateCounter(): Counter {
-  let entity = Counter.load("counter");
+function loadOrCreatePlayerResultData(playerAddress : Bytes, createdAt: BigInt): PlayerResult {
+  let entity = PlayerResult.load(playerAddress);
   if (!entity) {
-    entity = new Counter("counter");
-    entity.counter = 0;
-    entity.save();
+    entity = new PlayerResult(playerAddress);
   }
-  return entity;
-}
-
-function loadOrPlayerResultData(): PlayerResult {
-  let counter = loadOrCreateCounter();
-  let entity = PlayerResult.load(counter.counter.toString());
-  if (!entity) {
-    entity = new PlayerResult(counter.counter.toString());
-    entity.save();
-  }
+  entity.createdAt = createdAt;
+  entity.save();
   return entity;
 }
 
 export function handleSlots_Outcome_Event(event: Slots_Outcome_Event): void {
-  let playerResult = loadOrPlayerResultData();
+  let playerResult = loadOrCreatePlayerResultData(event.params.playerAddress, event.block.timestamp);
   playerResult.playerAddress = event.params.playerAddress;
   playerResult.wager  = event.params.wager;
   playerResult.payouts = event.params.payouts;
