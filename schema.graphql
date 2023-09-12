@@ -9,4 +9,5 @@ type PlayerResult @entity {
   payouts: [BigInt!]
   numGames: BigInt
   createdAt: BigInt
+  txn_hash: Bytes
 }

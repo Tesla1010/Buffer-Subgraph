@@ -24,5 +24,6 @@ export function handleSlots_Outcome_Event(event: Slots_Outcome_Event): void {
   playerResult.slotIDs = event.params.slotIDs;
   playerResult.multipliers = event.params.multipliers;
   playerResult.payout = event.params.payout;
+  playerResult.txn_hash = event.transaction.hash;
   playerResult.save();
 } 
