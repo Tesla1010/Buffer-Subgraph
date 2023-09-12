@@ -12,7 +12,6 @@ function loadOrCreatePlayerResultData(playerAddress : Bytes, createdAt: BigInt):
     entity = new PlayerResult(playerAddress);
   }
   entity.createdAt = createdAt;
-  entity.save();
   return entity;
 }
 
